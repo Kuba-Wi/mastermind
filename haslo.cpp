@@ -143,7 +143,6 @@ int main()
    pokaz();
 
    cout<<endl;
-   system("pause");
 
     return 0;
 }
