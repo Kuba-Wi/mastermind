@@ -79,7 +79,7 @@ void sprawdzam()
     czerwone=0;
     biale=0;
     int bialo[4]={0};
-    int blokuj_haslo[4]={0}; //niezbêdne gdy has³o zawiera kilka elementów w tym samym kolorze
+    int blokuj_haslo[4]={0}; //niezbÃªdne gdy hasÂ³o zawiera kilka elementÃ³w w tym samym kolorze
 
     for(int k=0;k<4;k++)
        if(haslo[k]==odgaduje[k])
