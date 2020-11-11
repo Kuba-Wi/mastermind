@@ -70,7 +70,7 @@ int sprawdzam(char proba[])
     for(int k=0;k<nr_wiersza;k++)
     {
         int bialo[4]={0};
-        int blokuj_haslo[4]={0}; //niezbêdne gdy has³o zawiera kilka elementów w tym samym kolorze
+        int blokuj_haslo[4]={0}; //niezbÄ™dne gdy hasÅ‚o zawiera kilka elementÃ³w w tym samym kolorze
 
         for(int j=0;j<4;j++)
             if(proba[j]==odgaduje[k][j])
