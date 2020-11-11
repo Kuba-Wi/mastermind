@@ -1,13 +1,18 @@
 #include <iostream>
-#include <ctime>
 #include <cstdlib>
 
 using namespace std;
-int wybor;
-int czerwone=0;
-int biale=0;
-char haslo[4];
-char odgaduje[4];
+int czerwone[9];
+int biale[9];
+char odgaduje[9][4];
+char legenda[8];
+char proba[4];
+int nr_wiersza=2;
+void poczatek()
+{
+    cout<<"Program odgaduje haslo w grze mastermind.\n";
+    cout<<"Po kazdym ruchu wpisz ilosc czerwonych i bialych elementow.\n\n";
+}
 void Legenda()
 {
     cout<<"Legenda:\n";
@@ -20,130 +25,150 @@ void Legenda()
     cout<<"p-pomaranczowy"<<endl;
     cout<<"z-zielony"<<endl;
     cout<<endl;
-
-    cout<<"Wcisnij 1, aby wylosowac haslo\n";
-    cout<<"Wcisnij 2, aby wpisac haslo\n";
 }
-void wybierz()
+void fill_legenda()
 {
-    cin>>wybor;
-    while(wybor!=1 and wybor!=2)
+    legenda[0]='c';
+    legenda[1]='r';
+    legenda[2]='n';
+    legenda[3]='Z';
+    legenda[4]='s';
+    legenda[5]='b';
+    legenda[6]='p';
+    legenda[7]='z';
+}
+void pierwsze_dwa()
+{
+    odgaduje[0][0]='c';
+    odgaduje[0][1]='r';
+    odgaduje[0][2]='n';
+    odgaduje[0][3]='Z';
+
+    odgaduje[1][0]='s';
+    odgaduje[1][1]='b';
+    odgaduje[1][2]='p';
+    odgaduje[1][3]='z';
+
+    for(int k=0;k<=1;k++)
     {
-        cout<<"Wybierz liczbe jeszcze raz\n";
-        cin>>wybor;
-    }
-}
-void losuj_haslo()
-{
-    srand(time(0));
-    int liczby[4];
-    for(int k=0;k<4;k++)
-        liczby[k]=rand()%8;
-
-    for(int k=0;k<4;k++)
-    {
-        switch(liczby[k])
-        {
-            case 0: haslo[k]='c';
-                    break;
-            case 1: haslo[k]='r';
-                    break;
-            case 2: haslo[k]='n';
-                    break;
-            case 3: haslo[k]='Z';
-                    break;
-            case 4: haslo[k]='s';
-                    break;
-            case 5: haslo[k]='b';
-                    break;
-            case 6: haslo[k]='p';
-                    break;
-            case 7: haslo[k]='z';
-        }
-    }
-}
-void wpisz_haslo()
-{
-    cout<<"\nWpisz haslo:\n";
-    for(int k=0;k<4;k++)
-        cin>>haslo[k];
-}
-void odgadujacy()
-{
-    cout<<"\nWpisz probe przeciwnika:\n";
-    for(int k=0;k<4;k++)
-    cin>>odgaduje[k];
-}
-void sprawdzam()
-{
-    czerwone=0;
-    biale=0;
-    int bialo[4]={0};
-    int blokuj_haslo[4]={0}; //niezbêdne gdy has³o zawiera kilka elementów w tym samym kolorze
-
-    for(int k=0;k<4;k++)
-       if(haslo[k]==odgaduje[k])
-        {
-            czerwone++;
-            bialo[k]=1;
-            blokuj_haslo[k]=1;
-        }
-
-    for(int k=0;k<4;k++)
+        cout<<k+1<<".\n";
         for(int i=0;i<4;i++)
-            if(bialo[k]==0 and blokuj_haslo[i]==0 and haslo[i]==odgaduje[k])
-            {
-                bialo[k]=1;
-                blokuj_haslo[i]=1;
-                biale++;
-            }
+            cout<<odgaduje[k][i];
+        cout<<"\nCzerwone: ";
+        cin>>czerwone[k];
+        cout<<"Biale: ";
+        cin>>biale[k];
+    }
 }
+int sprawdzam(char proba[])
+{
+    int wiersze_poprawnie=0;
+
+    int czerwone_sprawdzam[9]={0};
+    int biale_sprawdzam[9]={0};
+
+    for(int k=0;k<nr_wiersza;k++)
+    {
+        int bialo[4]={0};
+        int blokuj_haslo[4]={0}; //niezbêdne gdy has³o zawiera kilka elementów w tym samym kolorze
+
+        for(int j=0;j<4;j++)
+            if(proba[j]==odgaduje[k][j])
+            {
+            czerwone_sprawdzam[k]++;
+            bialo[j]=1;
+            blokuj_haslo[j]=1;
+            }
+
+        for(int j=0;j<4;j++)
+            for(int l=0;l<4;l++)
+                if(bialo[j]==0 and blokuj_haslo[l]==0 and proba[l]==odgaduje[k][j])
+                {
+                    bialo[j]=1;
+                    blokuj_haslo[l]=1;
+                    biale_sprawdzam[k]++;
+                }
+        if(biale_sprawdzam[k]==biale[k] and czerwone_sprawdzam[k]==czerwone[k])
+            wiersze_poprawnie++;
+    }
+    if(wiersze_poprawnie==nr_wiersza)
+        return 1;
+    else
+        return 0;
+}
+void sprawdzam_all()
+{
+    int wyjscie=0;
+    for(int a=0;a<8;a++)
+    {
+        if(wyjscie==1)
+            break;
+        proba[0]=legenda[a];
+        for(int b=0;b<8;b++)
+        {
+            if(wyjscie==1)
+                break;
+            proba[1]=legenda[b];
+            for(int c=0;c<8;c++)
+            {
+                if(wyjscie==1)
+                    break;
+                proba[2]=legenda[c];
+                for(int d=0;d<8;d++)
+                {
+                    if(wyjscie==1)
+                        break;
+                    proba[3]=legenda[d];
+                    if(sprawdzam(proba)==1)
+                    {
+                        for(int k=0;k<4;k++)
+                            odgaduje[nr_wiersza][k]=proba[k];
+                        wyjscie=1;
+                        break;
+                    }
+                }
+            }
+        }
+    }
+}
+void koniec()
+{
+    cout<<"Haslo to:\n";
+    for(int k=0;k<4;k++)
+        cout<<odgaduje[nr_wiersza][k];
+}
+
 void pokaz()
 {
-    int k=1;
-    for(;k<=9;k++)
+    for(;nr_wiersza<9;nr_wiersza++)
     {
-        cout<<endl<<k<<". ";
-        odgadujacy();
-        sprawdzam();
-        cout<<"Czerwone: ";
-        cout<<czerwone<<endl;
+        sprawdzam_all();
+        cout<<nr_wiersza+1<<".\n";
+        for(int k=0;k<4;k++)
+            cout<<odgaduje[nr_wiersza][k];
+        cout<<"\nCzerwone: ";
+        cin>>czerwone[nr_wiersza];
+        if(czerwone[nr_wiersza]==4)
+           {
+               koniec();
+               break;
+           }
         cout<<"Biale: ";
-        cout<<biale<<endl;
+        cin>>biale[nr_wiersza];
+    }
 
-        if(czerwone==4)
-        {
-            cout<<endl;
-            cout<<"Haslo odgadniete.\n";
-            cout<<"Haslo to:\n";
-            for(int k=0;k<4;k++)
-                cout<<haslo[k]<<" ";
-            break;
-        }
-    }
-    if(k>9)
-    {
-        cout<<endl;
-        cout<<"Haslo nieodgadniete.\n";
-        cout<<"Haslo to:\n";
-            for(int k=0;k<4;k++)
-                cout<<haslo[k]<<" ";
-    }
 }
+
 int main()
 {
-   Legenda();
-   wybierz();
-   switch(wybor)
-   {
-       case 1: losuj_haslo();
-                break;
-       case 2: wpisz_haslo();
-   }
-   pokaz();
+    poczatek();
+    Legenda();
+    fill_legenda();
+    pierwsze_dwa();
+    pokaz();
 
-   cout<<endl;
-   system("pause");
+    cout<<endl;
+    system("pause");
 
     return 0;
 }
